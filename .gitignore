@@ -1,0 +1,8 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+LLM_filtering_beta/
+
+t5-summarization-env/
+
+token.json/

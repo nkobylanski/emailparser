@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>emailparser</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Additional CSS for JSON display -->
+    <style>
+        #json-data {
+            white-space: pre-wrap; /* Ensures that long lines wrap and don't cause horizontal scrolling */
+            word-wrap: break-word; /* Breaks words that are too long to fit in the container */
+            overflow-x: auto; /* If horizontal scrolling is absolutely necessary, this will allow it */
+            max-width: 100%; /* Ensures the pre element doesn't exceed the container's width */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-2">Raw-Email to JSON Parser</h1>
+        <p class="text-center subtitle">Send an email to <strong>emailparser0@gmail.com</strong> to test it! (might take a few seconds)</p>
+        <div class="card">
+            <div class="card-body">
+                <pre id="json-data" class="bg-dark text-white p-3 rounded"></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript to Fetch JSON -->
+    <script>
+        fetch('/api/email') 
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('json-data').textContent = JSON.stringify(data, null, 4);
+            })
+            .catch(error => console.error('Error fetching JSON:', error));
+    </script>
+
+    <!-- Bootstrap JS (Optional, for components like modals) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
