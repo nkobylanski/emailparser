@@ -6,3 +6,5 @@ LLM_filtering_beta/
 t5-summarization-env/
 
 token.json/
+
+parsed_emails/

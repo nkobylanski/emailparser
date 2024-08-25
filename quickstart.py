@@ -19,11 +19,7 @@ def main():
             token.write(creds.to_json())
 
     service = build('gmail', 'v1', credentials=creds)
-    labels = service.users().labels().list(userId='me').execute().get('labels', [])
-
-    print('Labels:')
-    for label in labels:
-        print(label['name'])
+    print([label['name'] for label in service.users().labels().list(userId='me').execute().get('labels', [])])
 
 if __name__ == '__main__':
     main()

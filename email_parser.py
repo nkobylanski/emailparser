@@ -1,6 +1,6 @@
-import json
 import os
 import re
+import json
 from bs4 import BeautifulSoup
 from email.header import decode_header
 from email.utils import parseaddr
@@ -16,55 +16,48 @@ def extract_links(text):
     return re.findall(r'(https?://\S+)', text)
 
 def decode_mime_words(text):
-    decoded_parts = [part.decode(encoding or 'utf-8') if isinstance(part, bytes) else part 
-                     for part, encoding in decode_header(text)]
-    return ''.join(decoded_parts)
+    return ''.join(part.decode(encoding or 'utf-8') if isinstance(part, bytes) else part 
+                   for part, encoding in decode_header(text))
+
+def save_attachment(part, save_dir):
+    filename = decode_mime_words(part.get_filename())
+    if filename:
+        filepath = os.path.join(save_dir, filename)
+        with open(filepath, 'wb') as f:
+            f.write(part.get_payload(decode=True))
+        print(f"Attachment saved to {filepath}")
 
 def parse_email_from_message(msg):
-    encoded_sender_name, sender_email = parseaddr(msg['From'])
-    sender_name = decode_mime_words(encoded_sender_name)
-    
-    subject = decode_mime_words(msg['Subject'])
+    sender_name, sender_email = parseaddr(msg['From'])
+    subject = decode_mime_words(msg['Subject']).strip()
+    safe_subject = re.sub(r'[<>:"/\\|?*]', '_', subject)
     message_body, links = set(), []
 
-    def process_text(part_text):
-        part_text = part_text.replace('\r', '').replace('\n', ' ').strip()
-        links.extend(extract_links(part_text))
-        return re.sub(r'(https?://\S+)', '', part_text)
+    def process_text(text):
+        text = text.replace('\r', '').replace('\n', ' ').strip()
+        links.extend(extract_links(text))
+        return re.sub(r'(https?://\S+)', '', text)
 
+    attachments, save_dir = False, None
     for part in msg.walk() if msg.is_multipart() else [msg]:
-        content_type = part.get_content_type()
-        if "attachment" not in part.get("Content-Disposition", ""):
-            if content_type == "text/plain":
-                processed_text = process_text(part.get_payload(decode=True).decode(part.get_content_charset() or 'utf-8', errors='ignore'))
-                message_body.add(processed_text)
-            elif content_type == "text/html":
-                html_content = part.get_payload(decode=True).decode(part.get_content_charset() or 'utf-8', errors='ignore')
-                processed_text = process_text(html_to_text(html_content))
-                message_body.add(processed_text)
+        if "attachment" in part.get("Content-Disposition", ""):
+            if not attachments:
+                save_dir = os.path.join('parsed_emails', safe_subject)
+                os.makedirs(save_dir, exist_ok=True)
+            attachments = True
+            save_attachment(part, save_dir)
+        elif part.get_content_type() == "text/plain":
+            message_body.add(process_text(part.get_payload(decode=True).decode(part.get_content_charset() or 'utf-8')))
+        elif part.get_content_type() == "text/html":
+            message_body.add(process_text(html_to_text(part.get_payload(decode=True).decode(part.get_content_charset() or 'utf-8'))))
 
-    email_data = OrderedDict([
-        ('From', sender_name.strip()),  # Strip any leading or trailing spaces
-        ('Sender_Email', sender_email),
-        ('Subject', subject.strip()),
-        ('Message', " ".join(message_body).strip()),
-        ('Links', links)
-    ])
+    email_data = OrderedDict([('From', sender_name), ('Sender_Email', sender_email), 
+                              ('Subject', subject), ('Message', " ".join(message_body)), ('Links', links)])
+    return email_data, attachments, save_dir
 
-    return email_data
-
-def save_as_json(data, output_dir):
-    # Get the subject and replace invalid filename characters with underscores
-    subject = data['Subject']
-    safe_subject = re.sub(r'[<>:"/\\|?*]', '_', subject)
-
-    # Define the output file path
-    file_path = os.path.join(output_dir, f"{safe_subject}.json")
-
-    os.makedirs(output_dir, exist_ok=True)
+def save_as_json(data, output_dir, save_dir, attachments):
+    file_path = os.path.join(save_dir or output_dir, f"{re.sub(r'[<>:"/\\|?*]', '_', data['Subject'])}.json")
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
-    print(f"Email data has been saved to {file_path}")
-
-if __name__ == '__main__':
-    print("This script is designed to be used as a module. Please import and use the functions directly.")
+    print(f"Email saved to {file_path}")
+    return file_path
