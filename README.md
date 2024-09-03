@@ -21,3 +21,7 @@ pip install flask requests email beautifulsoup4 lxml google-auth google-auth-oau
 ![Captura de pantalla (4)](https://github.com/user-attachments/assets/dd42b2fe-0bf0-4cd0-9aad-2f803ef7a8c5)
 
 - Now run the `main.py` script to receive your emails into a JSON format. If the program doesn't automatically create a **"parsed_emails"** folder, go ahead and create it in the same directory. You can also visualize your JSON files in your browser: `http://127.0.0.1:5000`.
+
+### Disclaimer
+
+- Gmail API refreshes after a certain time so you will need to rerun the `quickstart.py` for it to keep working.
