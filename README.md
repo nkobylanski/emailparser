@@ -5,7 +5,7 @@
 - Install the following python dependencies (python 3.12.x)
 
 ```python
-pip install flask requests email beautifulsoup4 lxml google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
+pip install flask requests email beautifulsoup4 lxml google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client google-cloud-pubsub
 ```
 
 ### Instructions
