@@ -24,4 +24,4 @@ pip install flask requests email beautifulsoup4 lxml google-auth google-auth-oau
 
 ### Disclaimer
 
-- Gmail API refreshes after a certain time so you will need to rerun the `quickstart.py` for it to keep working.
+- Gmail API refreshes after a certain time (usually an hour) so you will need to rerun the `quickstart.py` for it to refresh the `token.json`.
