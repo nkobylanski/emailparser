@@ -1,4 +1,5 @@
 import threading
+import time
 from app import app
 from fetch_emails import get_service, fetch_emails
 
@@ -7,6 +8,7 @@ def email_monitor():
     if service:
         while True:
             fetch_emails(service)
+            time.sleep(20)
 
 if __name__ == '__main__':
     threading.Thread(target=email_monitor, daemon=True).start()
