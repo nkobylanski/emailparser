@@ -22,6 +22,8 @@ pip install flask requests email beautifulsoup4 lxml google-auth google-auth-oau
 
 - Now run the `main.py` script to receive your emails into a JSON format. If the program doesn't automatically create a **"parsed_emails"** folder, go ahead and create it in the same directory. You can also visualize your JSON files in your browser: `http://127.0.0.1:5000`.
 
-### Disclaimer
+### Disclaimers
 
 - Gmail API refreshes after a certain time (usually an hour) so you will need to rerun the `quickstart.py` for it to refresh the `token.json`.
+- Gmail API has a request limit with a 24-hour cooldown.
+- Attachments are handled and saved locally.
