@@ -1,1 +1,1 @@
-![Opera Instantánea_2024-09-06_003717_app diagrams net](https://github.com/user-attachments/assets/2121bbf8-8e1b-413a-a8ea-c36c7081559b)
+![Opera Instantánea_2024-09-06_004659_app diagrams net](https://github.com/user-attachments/assets/3c708a8a-a124-4379-bdeb-503dc0bf466f)
