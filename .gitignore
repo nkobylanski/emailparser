@@ -8,3 +8,5 @@ t5-summarization-env/
 token.json/
 
 parsed_emails/
+config.bat
+node_modules
